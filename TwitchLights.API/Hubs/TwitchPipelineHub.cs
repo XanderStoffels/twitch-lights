@@ -5,39 +5,83 @@ using System.Linq;
 using System.Threading.Tasks;
 using TwitchLib.Client.Models;
 using TwitchLights.API.Services;
+using TwitchLights.Lib.SignalR;
 
 namespace TwitchLights.API.Hubs
 {
-    public class TwitchPipelineHub : Hub
+    public class TwitchPipelineHub : Hub<IBotClient>, IHubForBot, IHubForClient
     {
-
-
-        public TwitchPipelineHub()
-        {
-        }
+        private static string _bot;
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await this.Clients.Group("Bot").SendAsync("RemoveViewer", this.Context.ConnectionId);
+            if (!string.IsNullOrWhiteSpace(_bot))
+                await Bot.UserLeave(this.Context.ConnectionId);
+
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task Subscribe(string channelName)
+        // IHubForBot
+        public Task RegisterAsBot()
         {
-            channelName = channelName.ToLower();
-            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, channelName);
-            await this.Clients.Group("Bot").SendAsync("WatchChannel", channelName, this.Context.ConnectionId);
+            if (string.IsNullOrWhiteSpace(_bot))
+                _bot = this.Context.ConnectionId;
+  
+            return Task.CompletedTask;
+        }
+        public Task SendError(string error)
+        {
+            return this.AllExceptBot.ReceiveErrorEvent(error);
+        }
+        public Task SendHex(string channel, UserContext user, string hex)
+        {
+            channel = channel.ToLower();
+            return this.Clients.Group(channel).ReceiveHex(user, hex);
+        }
+        public Task SendInfo(string info)
+        {
+            return this.AllExceptBot.ReceiveInfoEvent(info);
+        }
+        public Task SendJoin(int count)
+        {
+            return this.AllExceptBot.ReceiveJoinEvent(count);
+        }
+        public Task SendLeave(int count)
+        {
+            return this.AllExceptBot.ReceiveLeaveEvent(count);
+        }
+        public Task SendPing(string status)
+        {
+            return this.AllExceptBot.ReceivePingEvent(status);
         }
 
-        public async Task BotSubscribe()
+        // IHubForClient
+        public async Task Subscribe(string channel)
         {
-            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, "Bot");
+            await EnsureBotInit();
+            channel = channel.ToLower();
+            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, channel);
+            await this.Bot.UserJoin(this.Context.ConnectionId, channel);
+        }
+        public async Task Unsubscribe(string channel)
+        {
+            await EnsureBotInit();
+            channel = channel.ToLower();
+            await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, channel);
+            await this.Bot.UserLeave(this.Context.ConnectionId);
         }
 
-        public Task SendHex(string channel, string sender, bool isSub, string hex)
+        // Helper functions.
+        private IBotClient Bot => this.Clients.Client(_bot);
+        private IBotClient AllExceptBot => this.Clients.AllExcept(new[] { _bot });
+        private async ValueTask<bool> EnsureBotInit()
         {
-            return this.Clients.Group(channel.ToLower())
-                .SendAsync("ReceiveHex", sender, isSub, hex);
+            if (string.IsNullOrEmpty(_bot))
+            {
+                await this.Clients.Caller.ReceiveErrorEvent("The Twitch Bot is not connected!");
+                return false;
+            }
+            return true;
         }
     }
 }

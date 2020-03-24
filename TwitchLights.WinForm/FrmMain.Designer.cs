@@ -33,12 +33,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cbRoutines = new System.Windows.Forms.CheckBox();
             this.cbAlerts = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cbSubOnly = new System.Windows.Forms.CheckBox();
             this.cbEnabled = new System.Windows.Forms.CheckBox();
             this.lbCommands = new System.Windows.Forms.ListBox();
             this.ptbStatus = new System.Windows.Forms.PictureBox();
             this.lblStatusTitle = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblHealthCheck = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptbStatus)).BeginInit();
             this.SuspendLayout();
@@ -49,7 +51,7 @@
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.cbRoutines);
             this.panel1.Controls.Add(this.cbAlerts);
-            this.panel1.Controls.Add(this.checkBox1);
+            this.panel1.Controls.Add(this.cbSubOnly);
             this.panel1.Controls.Add(this.cbEnabled);
             this.panel1.Location = new System.Drawing.Point(12, 250);
             this.panel1.Name = "panel1";
@@ -88,15 +90,15 @@
             this.cbAlerts.Text = "Alert reaction";
             this.cbAlerts.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // cbSubOnly
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(53, 74);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(133, 24);
-            this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "Sub Only mode";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.cbSubOnly.AutoSize = true;
+            this.cbSubOnly.Location = new System.Drawing.Point(53, 74);
+            this.cbSubOnly.Name = "cbSubOnly";
+            this.cbSubOnly.Size = new System.Drawing.Size(133, 24);
+            this.cbSubOnly.TabIndex = 1;
+            this.cbSubOnly.Text = "Sub Only mode";
+            this.cbSubOnly.UseVisualStyleBackColor = true;
             // 
             // cbEnabled
             // 
@@ -149,11 +151,33 @@
             this.lblStatus.TabIndex = 4;
             this.lblStatus.Text = "Connecting...";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.Silver;
+            this.label2.Location = new System.Drawing.Point(12, 438);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(122, 20);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Latest KeepAlive:";
+            // 
+            // lblHealthCheck
+            // 
+            this.lblHealthCheck.AutoSize = true;
+            this.lblHealthCheck.ForeColor = System.Drawing.Color.Silver;
+            this.lblHealthCheck.Location = new System.Drawing.Point(137, 438);
+            this.lblHealthCheck.Name = "lblHealthCheck";
+            this.lblHealthCheck.Size = new System.Drawing.Size(45, 20);
+            this.lblHealthCheck.TabIndex = 6;
+            this.lblHealthCheck.Text = "None";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(606, 450);
+            this.ClientSize = new System.Drawing.Size(606, 465);
+            this.Controls.Add(this.lblHealthCheck);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lblStatusTitle);
             this.Controls.Add(this.ptbStatus);
@@ -176,7 +200,7 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListBox lbCommands;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox cbSubOnly;
         private System.Windows.Forms.CheckBox cbEnabled;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox cbRoutines;
@@ -184,5 +208,7 @@
         private System.Windows.Forms.PictureBox ptbStatus;
         private System.Windows.Forms.Label lblStatusTitle;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblHealthCheck;
     }
 }

@@ -14,6 +14,8 @@ using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
+using TwitchLights.API.Hubs;
+using TwitchLights.Lib.SignalR;
 
 namespace TwitchLights.API.Services
 {
@@ -23,9 +25,10 @@ namespace TwitchLights.API.Services
         private readonly string REFRESH_TOKEN;
         private readonly ConcurrentDictionary<string, HashSet<string>> _watchedChannels;
         private readonly ILogger<TwitchBotBackgroundService> _logger;
+        private bool _isHealthy;
 
-        private TwitchClient _client;
-        private HubConnection _connection;
+        private TwitchClient _twitch;
+        private HubForBot _hub;
         public TwitchBotBackgroundService(IConfiguration config, ILogger<TwitchBotBackgroundService> logger)
         {
             this._logger = logger;
@@ -36,38 +39,31 @@ namespace TwitchLights.API.Services
                 this._logger.LogError("No ACCESS or REFRESH token found. Bot can not start.");
                 return;
             }
-               
-            string url = @"https://twitchlights.xanderapp.com/twitchpipeline";
-#if DEBUG
-            url = @"https://localhost:5001/twitchpipeline";
-#endif
-            _connection = new HubConnectionBuilder()
-                .WithUrl(url)
-                .WithAutomaticReconnect()
-                .Build();
-
-            _connection.On<string, string>("WatchChannel", WatchChannel);
-            _connection.On<string>("RemoveViewer", RemoveViewer);
+            _hub = new HubForBot();
+            _hub.OnUserJoin += this.OnUserJoin;
+            _hub.OnUserLeave += this.OnUserLeave;
+       
             this._watchedChannels = new ConcurrentDictionary<string, HashSet<string>>();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            if (_connection == null) return Task.CompletedTask;
+            _ = PostHealth();
 
             // Needs to happen at a later time because the SignalR hub needs to be started first.
             _ = Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(3));
 
-                await _connection.StartAsync();
+                await _hub.StartAsync();
                 _logger.LogInformation("Connected to SignalR");
 
-                await _connection.SendAsync("BotSubscribe");
+                await _hub.RegisterAsBot();
                 _logger.LogInformation("Subscribed to Bot Group");
-                _client.Connect();
+                _twitch.Connect();
             });
 
+            // Init Twitch bot.
             var credentials = new ConnectionCredentials("proto4bot", ACCESS_TOKEN);
             var clientOptions = new ClientOptions
             {
@@ -75,39 +71,37 @@ namespace TwitchLights.API.Services
                 ThrottlingPeriod = TimeSpan.FromSeconds(30)
             };
             var customClient = new WebSocketClient(clientOptions);
-            _client = new TwitchClient(customClient);
-            _client.AddChatCommandIdentifier('!');
-            _client.Initialize(credentials);
-            _client.OnJoinedChannel += twitch_OnJoinedChannel;
-            _client.OnLeftChannel += _client_OnLeftChannel;
-            _client.OnChatCommandReceived += _client_OnChatCommandReceived;
-            _client.OnConnected += _client_OnConnected;
+            _twitch = new TwitchClient(customClient);
+            _twitch.AddChatCommandIdentifier('!');
+            _twitch.Initialize(credentials);
+            _twitch.OnJoinedChannel += Twitch_OnJoinedChannel;
+            _twitch.OnLeftChannel += Twitch_OnLeftChannel;
+            _twitch.OnChatCommandReceived += Twitch_OnChatCommandReceived;
+            _twitch.OnConnected += Twitch_OnConnected;
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _client.Disconnect();
-            _client.Disconnect();
-            return Task.CompletedTask;
+            _twitch.Disconnect();
+            return _hub.StopAsync();
         }
 
-        private void _client_OnLeftChannel(object sender, OnLeftChannelArgs e)
+        // Twitch events.
+        private void Twitch_OnLeftChannel(object sender, OnLeftChannelArgs e)
         {
             // Leaving the channel does not happen here.
             // This happens in the RemoveViewer method.
-            _logger.LogInformation($"Connected to Twitch Channel {e.Channel}");
+            _logger.LogInformation($"Left Twitch Channel {e.Channel}");
         }
-
-        private void _client_OnConnected(object sender, OnConnectedArgs e)
+        private void Twitch_OnConnected(object sender, OnConnectedArgs e)
         {
             _logger.LogInformation("Bot connected to Twitch.");
         }
-
-        private async void _client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
+        private async void Twitch_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
         {
-            var triggers = new string[] { "lights", "tl", "l", "hue" };
+            var triggers = new string[] { "lights", "hue" };
             if (triggers.Contains(e.Command.CommandText) && e.Command.ArgumentsAsList.Count == 1)
             {
                 var input = e.Command.ArgumentsAsList[0];
@@ -115,49 +109,65 @@ namespace TwitchLights.API.Services
                 if (hex != null)
                     input = hex;
                
-                await _connection.SendAsync("SendHex", e.Command.ChatMessage.Channel, e.Command.ChatMessage.Username,e.Command.ChatMessage.IsSubscriber, input); 
+                await _hub.SendHex(e.Command.ChatMessage.Channel, new UserContext {
+                    Id = e.Command.ChatMessage.UserId,
+                    IsSub = e.Command.ChatMessage.IsSubscriber,
+                    Username = e.Command.ChatMessage.Username
+                }, input); 
             }
         }
-
-        private void twitch_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
+        private void Twitch_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            _client.SendMessage(e.Channel, "Hi chat! You can now influence the streamer's or some viewer's lights!");
+            _twitch.SendMessage(e.Channel, "Hi chat! I'm watching for light commands now!");
             _logger.LogInformation($"Connected to Twitch Channel {e.Channel}");
-
         }
 
-        private void WatchChannel(string channel, string connectionId)
+        // SignalR events.
+        private async void OnUserJoin(string connectionId, string channel)
         {
             if (this._watchedChannels.TryGetValue(channel, out var viewers))
             {
                 if (viewers.Contains(connectionId)) return;
                 viewers.Add(connectionId);
-                _client.SendMessage(channel, $"There are currently {viewers.Count} lights reacting to chat!");
+                _twitch.SendMessage(channel, $"There are currently {viewers.Count} lights reacting to chat!");
             }
             else
             {
                 this._watchedChannels.TryAdd(channel, new HashSet<string>() { connectionId });
-                _client.JoinChannel(channel);
-
+                _twitch.JoinChannel(channel);
+                _logger.LogInformation($"Joining channel {channel}.");
             }
+            await _hub.SendJoin(this._watchedChannels[channel].Count);
         }
-
-        private void RemoveViewer(string connectionId)
+        private void OnUserLeave(string connectionId)
         {
             // Leave a channel if the only watching user leaves.
             foreach (var kv in _watchedChannels)
                 if (kv.Value.Contains(connectionId))
                 {
                     kv.Value.Remove(connectionId);
-                    _client.SendMessage(kv.Key, $"There are currently {kv.Value.Count} lights reacting to chat!");
+                    _twitch.SendMessage(kv.Key, $"There are currently {kv.Value.Count} lights reacting to chat!");
                     if (kv.Value.Count == 0)
                     {
-                        _client.SendMessage(kv.Key, "Leaving channel, bye chat!");
+                        _twitch.SendMessage(kv.Key, "Leaving channel, bye chat!");
                         _watchedChannels.TryRemove(kv.Key, out var _);
-                        _client.LeaveChannel(kv.Key);
+                        _logger.LogInformation($"Leaving channel {kv.Key}.");
+                        _twitch.LeaveChannel(kv.Key);
 
                     }
+                    _hub.SendLeave(kv.Value.Count);
                 }
+        }
+
+        // Health
+        private async Task PostHealth(CancellationToken token = default)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (_hub.IsConnection && _twitch.IsConnected)
+                    await _hub.SendPing("PING");
+                await Task.Delay(TimeSpan.FromSeconds(10));
+            }
         }
 
     }
