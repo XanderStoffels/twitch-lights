@@ -145,7 +145,7 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(66, 50);
+            this.lblStatus.Location = new System.Drawing.Point(32, 38);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(93, 20);
             this.lblStatus.TabIndex = 4;

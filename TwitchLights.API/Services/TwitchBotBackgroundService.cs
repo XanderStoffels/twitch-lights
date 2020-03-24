@@ -129,7 +129,6 @@ namespace TwitchLights.API.Services
             {
                 if (viewers.Contains(connectionId)) return;
                 viewers.Add(connectionId);
-                _twitch.SendMessage(channel, $"There are currently {viewers.Count} lights reacting to chat!");
             }
             else
             {
@@ -146,7 +145,6 @@ namespace TwitchLights.API.Services
                 if (kv.Value.Contains(connectionId))
                 {
                     kv.Value.Remove(connectionId);
-                    _twitch.SendMessage(kv.Key, $"There are currently {kv.Value.Count} lights reacting to chat!");
                     if (kv.Value.Count == 0)
                     {
                         _twitch.SendMessage(kv.Key, "Leaving channel, bye chat!");
