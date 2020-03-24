@@ -10,7 +10,7 @@ namespace TwitchLights.API.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("RedirectionBasedOnOs", "Downloads");
         }
     }
 }
