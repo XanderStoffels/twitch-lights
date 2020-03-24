@@ -127,7 +127,7 @@
             this.ptbStatus.Image = ((System.Drawing.Image)(resources.GetObject("ptbStatus.Image")));
             this.ptbStatus.Location = new System.Drawing.Point(199, 11);
             this.ptbStatus.Name = "ptbStatus";
-            this.ptbStatus.Size = new System.Drawing.Size(95, 92);
+            this.ptbStatus.Size = new System.Drawing.Size(95, 105);
             this.ptbStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ptbStatus.TabIndex = 2;
             this.ptbStatus.TabStop = false;

@@ -5,6 +5,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>tl.ico</ApplicationIcon>
+    <Version>0.3.1</Version>
+    <Authors>Xander Stoffels</Authors>
+    <Company />
+    <Product>TwitchLights</Product>
+    <RepositoryUrl>https://github.com/XanderStoffels/twitch-lights</RepositoryUrl>
+    <RepositoryType>Public</RepositoryType>
+    <AssemblyVersion>0.3.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

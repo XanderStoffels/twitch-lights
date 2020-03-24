@@ -46,38 +46,31 @@ namespace TwitchLights.WinForm
         {
             WriteLog($"{user.Username}: Routine : {routine}");
         }
-
         private void ReceiveRoutine(string routine)
         {
             WriteLog($"Routine : {routine}");
         }
-
         private void ReceiveJoinEvent(int count)
         {
             WriteLog($"Light user joined! [{count}]");
         }
-
         private void ReceiveErrorEvent(string error)
         {
             MessageBox.Show(error, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
         private void ReceiveLeaveEvent(int count)
         {
             WriteLog($"Light user left! [{count}]");
         }
-
         private void ReceivePingEvent(string status)
         {
             if (status == "PING")
                 lblHealthCheck.Text = DateTime.Now.ToLongTimeString();
         }
-
         private void ReceiveInfoEvent(string info)
         {
             MessageBox.Show(info, "Message from server", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
         private void ReceiveHex(UserContext user, string hex)
         {
             if (!cbEnabled.Checked) return;
@@ -96,6 +89,8 @@ namespace TwitchLights.WinForm
         // Form events
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            this.Text += $" {Application.ProductVersion}";
+
             while (string.IsNullOrWhiteSpace(_channelName))
                 _channelName = Prompt.ShowDialog("Please enter the channel name you want to monitor.", "Channel Name");
         }

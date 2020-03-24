@@ -25,6 +25,7 @@ namespace TwitchLights.WinForm
 
         private async void FrmHandshake_Load(object sender, EventArgs e)
         {
+            this.Text += $" {Application.ProductVersion}";
             var store = new Store();
             await store.CreateDirectoriesAsync();
 

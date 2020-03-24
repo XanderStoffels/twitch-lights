@@ -25,9 +25,7 @@ namespace TwitchLights.WinForm
 
         private async void FormStartup_Load(object sender, EventArgs e)
         {
-#if DEBUG
-            MessageBox.Show("Debug mode!");
-#endif
+            this.Text += $" {Application.ProductVersion}";
             // Check if the user has internet connection.
             try
             {

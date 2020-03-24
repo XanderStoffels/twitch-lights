@@ -14,6 +14,9 @@ namespace TwitchLights.WinForm
         [STAThread]
         static void Main()
         {
+#if DEBUG
+            MessageBox.Show("Debug mode!");
+#endif
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

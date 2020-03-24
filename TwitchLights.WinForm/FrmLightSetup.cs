@@ -26,6 +26,7 @@ namespace TwitchLights.WinForm
 
         private async void FrmLightSetup_Load(object sender, EventArgs e)
         {
+            this.Text += $" {Application.ProductVersion}";
             _lights = (await _client.GetLightsAsync()).ToList();
             foreach (var light in _lights)
             {
