@@ -183,6 +183,10 @@
             this.Controls.Add(this.ptbStatus);
             this.Controls.Add(this.lbCommands);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(624, 512);
+            this.MinimumSize = new System.Drawing.Size(624, 512);
             this.Name = "FrmMain";
             this.Text = "Twitch Lights";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLights.WinForm", "Twi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwitchLights.Lib", "TwitchLights.Lib\TwitchLights.Lib.csproj", "{1EE545E8-BE5C-41F0-BE51-CA09CCFF67AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchLights.WPF", "TwitchLights.WPF\TwitchLights.WPF.csproj", "{7A469561-0681-4302-BD59-E8D6FA1A2B90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1EE545E8-BE5C-41F0-BE51-CA09CCFF67AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EE545E8-BE5C-41F0-BE51-CA09CCFF67AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EE545E8-BE5C-41F0-BE51-CA09CCFF67AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A469561-0681-4302-BD59-E8D6FA1A2B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A469561-0681-4302-BD59-E8D6FA1A2B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A469561-0681-4302-BD59-E8D6FA1A2B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A469561-0681-4302-BD59-E8D6FA1A2B90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

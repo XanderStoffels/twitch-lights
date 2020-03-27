@@ -1100,28 +1100,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/28/2019 06:00:14</publishTime>
     </File>
     <File Include="TwitchLights.API">
-      <publishTime>03/24/2020 14:25:27</publishTime>
+      <publishTime>03/24/2020 20:18:51</publishTime>
     </File>
     <File Include="TwitchLights.API.deps.json">
-      <publishTime>03/24/2020 14:25:28</publishTime>
+      <publishTime>03/24/2020 20:18:51</publishTime>
     </File>
     <File Include="TwitchLights.API.dll">
-      <publishTime>03/24/2020 14:25:27</publishTime>
+      <publishTime>03/24/2020 20:18:51</publishTime>
     </File>
     <File Include="TwitchLights.API.exe">
       <publishTime>03/22/2020 18:57:07</publishTime>
     </File>
     <File Include="TwitchLights.API.pdb">
-      <publishTime>03/24/2020 14:25:27</publishTime>
+      <publishTime>03/24/2020 20:18:51</publishTime>
     </File>
     <File Include="TwitchLights.API.runtimeconfig.json">
       <publishTime>03/24/2020 14:17:09</publishTime>
     </File>
     <File Include="TwitchLights.API.Views.dll">
-      <publishTime>03/24/2020 14:25:27</publishTime>
+      <publishTime>03/24/2020 20:18:51</publishTime>
     </File>
     <File Include="TwitchLights.API.Views.pdb">
-      <publishTime>03/24/2020 14:25:27</publishTime>
+      <publishTime>03/24/2020 20:18:51</publishTime>
     </File>
     <File Include="TwitchLights.Lib.dll">
       <publishTime>03/24/2020 14:17:02</publishTime>
@@ -1130,7 +1130,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/24/2020 14:17:02</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>03/24/2020 14:25:28</publishTime>
+      <publishTime>03/24/2020 20:18:53</publishTime>
     </File>
     <File Include="wwwroot/css/site.css">
       <publishTime>03/19/2020 23:34:55</publishTime>
@@ -1246,6 +1246,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="wwwroot/releases/win/dependent/twitchlights-dependent-win64-0.2.zip">
       <publishTime>03/22/2020 21:48:57</publishTime>
     </File>
+    <File Include="wwwroot/releases/win/dependent/twitchlights-dependent-win64-0.3.1.zip">
+      <publishTime>03/24/2020 14:22:07</publishTime>
+    </File>
     <File Include="wwwroot/releases/win/dependent/twitchlights-dependent-win64-latest.zip">
       <publishTime>03/24/2020 14:22:07</publishTime>
     </File>
@@ -1254,6 +1257,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="wwwroot/releases/win/standalone/twitchlights-standalone-win64-0.2.zip">
       <publishTime>03/22/2020 21:49:47</publishTime>
+    </File>
+    <File Include="wwwroot/releases/win/standalone/twitchlights-standalone-win64-0.3.1.zip">
+      <publishTime>03/24/2020 14:22:49</publishTime>
     </File>
     <File Include="wwwroot/releases/win/standalone/twitchlights-standalone-win64-latest.zip">
       <publishTime>03/24/2020 14:22:49</publishTime>
